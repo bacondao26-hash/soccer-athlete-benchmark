@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soccer Athlete Benchmark | Performance Bacon S&C</title>
+  <meta name="description" content="Find out where your speed, power, and endurance stand against competitive HS soccer players. Free athlete benchmark tool from Performance Bacon S&C.">
+  <meta property="og:title" content="Where Do You Stack Up? — Soccer Athlete Benchmark">
+  <meta property="og:description" content="Test your speed, power, and endurance against HS soccer standards. Free tool from Performance Bacon S&C.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #06090e;
+      --bg2:       #0b1420;
+      --card:      #0e1a28;
+      --card2:     #12202f;
+      --border:    #182636;
+      --border2:   #1f3247;
+
+      --green:     #00e676;
+      --green-dim: rgba(0,230,118,.11);
+      --green-dk:  #00b054;
+
+      --text:      #dce9f4;
+      --muted:     #68839c;
+      --dim:       #2a3f55;
+
+      --gold:      #ffd34e;
+      --gold-bg:   rgba(255,211,78,.11);
+      --lime:      #00e676;
+      --lime-bg:   rgba(0,230,118,.11);
+      --amber:     #ffb340;
+      --amber-bg:  rgba(255,179,64,.11);
+      --orange:    #ff6b35;
+      --orange-bg: rgba(255,107,53,.11);
+      --red:       #f04438;
+      --red-bg:    rgba(240,68,56,.11);
+
+      --r:  12px;
+      --rl: 20px;
+    }
+
+    html { font-size: 16px; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* === SCREENS === */
+    .screen { display: none; flex-direction: column; min-height: 100dvh; padding: 36px 0 52px; animation: rise .3s ease; }
+    .screen.active { display: flex; }
+    @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* === PROGRESS === */
+    .prog-wrap { margin-bottom: 36px; }
+    .prog-track { height: 3px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .prog-fill  { height: 100%; background: var(--green); border-radius: 99px; transition: width .5s ease; }
+    .prog-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-top: 8px; }
+
+    /* === BRAND === */
+    .brand { margin-bottom: 44px; }
+    .brand-name { font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--green); }
+    .brand-sub  { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); margin-top: 2px; }
+
+    /* === HERO === */
+    .hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--green); margin-bottom: 14px; }
+    .hero-title {
+      font-size: clamp(42px, 10vw, 64px);
+      font-weight: 900;
+      line-height: .98;
+      letter-spacing: -.03em;
+      margin-bottom: 22px;
+    }
+    .hero-title em { font-style: normal; color: var(--green); }
+    .hero-body { font-size: 16px; line-height: 1.65; color: var(--muted); margin-bottom: 36px; max-width: 380px; }
+
+    /* === BUTTONS === */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 16px 24px; border-radius: var(--r);
+      font-family: inherit; font-size: 16px; font-weight: 700;
+      cursor: pointer; border: none; text-decoration: none;
+      letter-spacing: .01em; transition: all .15s ease;
+    }
+    .btn-primary { background: var(--green); color: #040810; width: 100%; font-size: 17px; }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); filter: brightness(1); }
+    .btn-ghost { background: transparent; color: var(--muted); padding: 12px 0; width: 100%; }
+    .btn-ghost:hover { color: var(--text); }
+    .btn-outline {
+      background: transparent; color: var(--text); width: 100%;
+      border: 1.5px solid var(--border2); border-radius: var(--r);
+      padding: 14px; font-family: inherit; font-size: 15px; font-weight: 600;
+      cursor: pointer; margin-top: 10px; transition: all .15s ease;
+    }
+    .btn-outline:hover { border-color: var(--green); color: var(--green); }
+
+    /* === STAT STRIP === */
+    .stat-strip { display: flex; gap: 10px; margin-top: 40px; }
+    .stat-chip {
+      flex: 1; background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 14px 10px; text-align: center;
+    }
+    .stat-v { font-size: 22px; font-weight: 900; color: var(--green); letter-spacing: -.02em; }
+    .stat-l { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 2px; }
+
+    .hero-disc { margin-top: 14px; font-size: 12px; color: var(--dim); text-align: center; }
+
+    /* === SECTION LABELS === */
+    .s-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--green); margin-bottom: 6px; }
+    .s-title { font-size: 26px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 8px; }
+    .s-sub   { font-size: 14px; color: var(--muted); line-height: 1.55; margin-bottom: 28px; }
+
+    /* === CHOICE BUTTONS === */
+    .choices { display: grid; gap: 10px; margin-bottom: 22px; }
+    .choices-2 { grid-template-columns: 1fr 1fr; }
+    .choices-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .c-btn {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--r); padding: 15px 10px;
+      font-family: inherit; font-size: 15px; font-weight: 600;
+      color: var(--muted); cursor: pointer; text-align: center;
+      transition: all .15s ease;
+    }
+    .c-btn:hover { border-color: var(--border2); color: var(--text); }
+    .c-btn.on    { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+
+    /* === SELECT === */
+    .sel-wrap { position: relative; margin-bottom: 26px; }
+    .sel-lbl  { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
+    select {
+      width: 100%; background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--r); padding: 14px 40px 14px 16px;
+      font-family: inherit; font-size: 15px; font-weight: 500; color: var(--text);
+      appearance: none; cursor: pointer; transition: border-color .15s;
+    }
+    select:focus { outline: none; border-color: var(--green); }
+    select option { background: var(--bg2); }
+    .sel-arrow { position: absolute; right: 14px; bottom: 16px; color: var(--muted); pointer-events: none; font-size: 11px; }
+
+    /* === TEST CARDS === */
+    .test-card {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--rl); padding: 20px; margin-bottom: 12px;
+    }
+    .tc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .tc-title  { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .tc-icon   { font-size: 18px; }
+    .tc-opt    { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); background: var(--bg2); padding: 3px 9px; border-radius: 99px; }
+    .tc-desc   { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
+    .tc-input-row { display: flex; gap: 10px; align-items: stretch; }
+    input[type="number"] {
+      flex: 1; background: var(--bg2); border: 1.5px solid var(--border);
+      border-radius: var(--r); padding: 12px 14px;
+      font-family: inherit; font-size: 20px; font-weight: 700; color: var(--text);
+      transition: border-color .15s;
+    }
+    input[type="number"]:focus { outline: none; border-color: var(--green); }
+    input[type="number"]::placeholder { color: var(--dim); font-weight: 400; font-size: 16px; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .unit-label {
+      display: flex; align-items: center; padding: 0 14px;
+      background: var(--bg2); border: 1.5px solid var(--border);
+      border-radius: var(--r); font-size: 14px; font-weight: 600; color: var(--muted);
+      white-space: nowrap;
+    }
+    .unit-select {
+      flex: 0; width: 86px; padding: 12px 10px;
+      font-size: 14px; background: var(--bg2);
+      border-color: var(--border);
+    }
+    .tc-tip { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 12px; color: var(--dim); line-height: 1.5; }
+    .tc-tip strong { color: var(--muted); }
+
+    /* === ERROR === */
+    .err { display: none; font-size: 13px; color: var(--red); margin: 10px 0 4px; }
+    .err.show { display: block; }
+
+    /* === RESULTS === */
+    .result-header {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--rl); padding: 24px; margin-bottom: 14px;
+    }
+    .rh-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 8px; }
+    .rh-title { font-size: 24px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 16px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { display: flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+    .chip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    .res-card {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--rl); padding: 20px; margin-bottom: 12px;
+    }
+    .rc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+    .rc-quality { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 4px; }
+    .rc-score   { font-size: 36px; font-weight: 900; letter-spacing: -.04em; line-height: 1; }
+    .rc-unit    { font-size: 16px; font-weight: 500; color: var(--muted); margin-left: 3px; }
+    .rating-badge { padding: 7px 14px; border-radius: 99px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+
+    .r0 { background: var(--gold-bg);   color: var(--gold);   }
+    .r1 { background: var(--lime-bg);   color: var(--lime);   }
+    .r2 { background: var(--amber-bg);  color: var(--amber);  }
+    .r3 { background: var(--orange-bg); color: var(--orange); }
+    .r4 { background: var(--red-bg);    color: var(--red);    }
+
+    .gauge-track { height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; position: relative; }
+    .gauge-fill  { height: 100%; border-radius: 99px; transition: width 1s cubic-bezier(.4,0,.2,1) .2s; }
+    .gauge-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+    .gauge-labels span { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--dim); }
+
+    .rc-insight { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .rc-insight strong { color: var(--text); font-weight: 600; }
+
+    /* === PRIORITY CARD === */
+    .priority-card {
+      background: var(--green-dim); border: 1.5px solid rgba(0,230,118,.3);
+      border-radius: var(--rl); padding: 24px; margin-bottom: 12px;
+    }
+    .prio-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; color: var(--green); margin-bottom: 8px; }
+    .prio-title { font-size: 20px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 8px; color: var(--text); }
+    .prio-body  { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* === CTA === */
+    .cta-card {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--rl); padding: 28px 24px 24px; text-align: center; margin-top: 4px;
+    }
+    .cta-badge { display: inline-block; background: var(--green-dim); color: var(--green); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; padding: 4px 12px; border-radius: 99px; margin-bottom: 16px; }
+    .cta-title { font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 10px; }
+    .cta-body  { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 24px; }
+    .cta-sub   { margin-top: 14px; font-size: 12px; color: var(--dim); }
+
+    /* === FOOTER === */
+    .footer { margin-top: auto; padding-top: 36px; font-size: 11px; color: var(--dim); text-align: center; line-height: 1.8; }
+
+    /* === DISCLAIMER BANNER === */
+    .disclaimer {
+      background: var(--card2); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 12px 14px; margin-top: 20px;
+      font-size: 12px; color: var(--muted); line-height: 1.55;
+    }
+
+    @media (max-width: 360px) {
+      .hero-title { font-size: 36px; }
+      .stat-strip { gap: 7px; }
+      .stat-chip { padding: 12px 7px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ════════════════════════════════════════
+       SCREEN 1 — LANDING
+  ════════════════════════════════════════ -->
+  <div class="screen active" id="s1">
+    <div class="brand">
+      <div class="brand-name">Performance Bacon</div>
+      <div class="brand-sub">Strength &amp; Conditioning</div>
+    </div>
+
+    <div class="hero-eyebrow">Free Athlete Tool — 2026</div>
+    <h1 class="hero-title">Where Do<br>You <em>Stack Up?</em></h1>
+    <p class="hero-body">
+      Benchmark your speed, power, and endurance against competitive high school soccer players — and find out exactly what to work on next.
+    </p>
+
+    <button class="btn btn-primary" onclick="go(2)">Start My Assessment &rarr;</button>
+    <p class="hero-disc">2 minutes &middot; Free &middot; No sign-up required</p>
+
+    <div class="stat-strip">
+      <div class="stat-chip"><div class="stat-v">4</div><div class="stat-l">Tests</div></div>
+      <div class="stat-chip"><div class="stat-v">3</div><div class="stat-l">Age Groups</div></div>
+      <div class="stat-chip"><div class="stat-v">8</div><div class="stat-l">Positions</div></div>
+    </div>
+
+    <div class="footer">
+      Performance Bacon S&C &copy; 2026<br>
+      <span style="color:var(--dim)">Benchmarks sourced from peer-reviewed soccer research</span>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════
+       SCREEN 2 — PROFILE
+  ════════════════════════════════════════ -->
+  <div class="screen" id="s2">
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" style="width:25%"></div></div>
+      <div class="prog-label">Step 1 of 3 — Profile</div>
+    </div>
+
+    <div class="s-label">Your Profile</div>
+    <div class="s-title">Tell us about yourself</div>
+    <div class="s-sub">We use this to apply the right benchmark group for your comparison.</div>
+
+    <label class="sel-lbl">Sex</label>
+    <div class="choices choices-2" id="g-sex">
+      <button class="c-btn" data-g="sex" data-v="male"   onclick="pick(this)">Male</button>
+      <button class="c-btn" data-g="sex" data-v="female" onclick="pick(this)">Female</button>
+    </div>
+
+    <label class="sel-lbl" style="margin-top:4px">Age Group</label>
+    <div class="choices choices-3" id="g-age">
+      <button class="c-btn" data-g="age" data-v="u15" onclick="pick(this)">U14–15</button>
+      <button class="c-btn" data-g="age" data-v="u17" onclick="pick(this)">U16–17</button>
+      <button class="c-btn" data-g="age" data-v="u19" onclick="pick(this)">U18–19</button>
+    </div>
+
+    <div class="sel-wrap" style="margin-top:4px">
+      <label class="sel-lbl" for="pos-sel">Position</label>
+      <select id="pos-sel">
+        <option value="">— Select your position —</option>
+        <option value="gk">Goalkeeper</option>
+        <option value="cb">Center Back</option>
+        <option value="fb">Fullback / Wing Back</option>
+        <option value="cdm">Defensive Midfielder</option>
+        <option value="cm">Central Midfielder</option>
+        <option value="cam">Attacking Midfielder</option>
+        <option value="w">Winger</option>
+        <option value="st">Striker / Forward</option>
+      </select>
+      <div class="sel-arrow">▼</div>
+    </div>
+
+    <div class="err" id="err-profile">Please select your sex, age group, and position.</div>
+
+    <button class="btn btn-primary" onclick="validateProfile()">Continue &rarr;</button>
+    <button class="btn btn-ghost" onclick="go(1)">&larr; Back</button>
+  </div>
+
+
+  <!-- ════════════════════════════════════════
+       SCREEN 3 — ENTER SCORES
+  ════════════════════════════════════════ -->
+  <div class="screen" id="s3">
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" style="width:60%"></div></div>
+      <div class="prog-label">Step 2 of 3 — Your Numbers</div>
+    </div>
+
+    <div class="s-label">Enter Your Numbers</div>
+    <div class="s-title">What did you score?</div>
+    <div class="s-sub">All tests are optional — enter what you have. Skip anything you haven't tested yet.</div>
+
+    <!-- 10m Sprint -->
+    <div class="test-card">
+      <div class="tc-header">
+        <div class="tc-title"><span class="tc-icon">⚡</span>10m Sprint</div>
+        <span class="tc-opt">Optional</span>
+      </div>
+      <div class="tc-desc">Your first-step acceleration — the most position-critical sprint distance in soccer.</div>
+      <div class="tc-input-row">
+        <input type="number" id="t-s10" placeholder="1.90" step="0.01" min="1.0" max="3.5" inputmode="decimal">
+        <div class="unit-label">seconds</div>
+      </div>
+      <div class="tc-tip"><strong>How to test:</strong> Standing start, 10m marked on ground, best of 2 attempts. Electronic timing is most accurate — add 0.10–0.15s to hand-timed results.</div>
+    </div>
+
+    <!-- 30m Sprint -->
+    <div class="test-card">
+      <div class="tc-header">
+        <div class="tc-title"><span class="tc-icon">🏃</span>30m Sprint</div>
+        <span class="tc-opt">Optional</span>
+      </div>
+      <div class="tc-desc">Top-end speed — the gold standard soccer speed benchmark used in youth and professional research.</div>
+      <div class="tc-input-row">
+        <input type="number" id="t-s30" placeholder="4.30" step="0.01" min="2.0" max="7.0" inputmode="decimal">
+        <div class="unit-label">seconds</div>
+      </div>
+      <div class="tc-tip"><strong>How to test:</strong> Standing start, 30m marked, best of 2 attempts with full recovery. Add 0.10–0.15s if hand-timed.</div>
+    </div>
+
+    <!-- Vertical Jump -->
+    <div class="test-card">
+      <div class="tc-header">
+        <div class="tc-title"><span class="tc-icon">🚀</span>Vertical Jump (CMJ)</div>
+        <span class="tc-opt">Optional</span>
+      </div>
+      <div class="tc-desc">Countermovement jump height — your lower-body explosive power, directly transferable to heading, shooting, and first-step explosion.</div>
+      <div class="tc-input-row">
+        <input type="number" id="t-cmj" placeholder="35" step="0.5" min="5" max="120" inputmode="decimal">
+        <select class="unit-select" id="cmj-unit">
+          <option value="cm">cm</option>
+          <option value="in">inches</option>
+        </select>
+      </div>
+      <div class="tc-tip"><strong>How to test:</strong> Measure standing reach, then jump from a squat and touch the highest point. Result = jump reach minus standing reach. Use a Vertec, jump mat, or Just Jump app. Standard arm swing allowed.</div>
+    </div>
+
+    <!-- Yo-Yo -->
+    <div class="test-card">
+      <div class="tc-header">
+        <div class="tc-title"><span class="tc-icon">🔋</span>Yo-Yo IRT Level 1</div>
+        <span class="tc-opt">Optional</span>
+      </div>
+      <div class="tc-desc">Total distance covered in the Yo-Yo Intermittent Recovery Test Level 1 — the most validated soccer aerobic fitness test on the planet.</div>
+      <div class="tc-input-row">
+        <input type="number" id="t-yoyo" placeholder="1200" step="40" min="40" max="6000" inputmode="numeric">
+        <div class="unit-label">meters</div>
+      </div>
+      <div class="tc-tip"><strong>How to test:</strong> Standard YYIR1 protocol. Record the total distance (in meters) when you fail to reach the cones in time on two consecutive shuttles.</div>
+    </div>
+
+    <div class="err" id="err-tests">Enter at least one test result to see your results.</div>
+
+    <button class="btn btn-primary" onclick="validateTests()" style="margin-top:6px">See My Results &rarr;</button>
+    <button class="btn btn-ghost" onclick="go(2)">&larr; Back</button>
+  </div>
+
+
+  <!-- ════════════════════════════════════════
+       SCREEN 4 — RESULTS
+  ════════════════════════════════════════ -->
+  <div class="screen" id="s4">
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" style="width:100%"></div></div>
+      <div class="prog-label">Step 3 of 3 — Your Results</div>
+    </div>
+
+    <div class="result-header">
+      <div class="rh-tag" id="rh-tag">U17 Male · Central Midfielder</div>
+      <div class="rh-title">Your Athletic Profile</div>
+      <div class="chips" id="rh-chips"></div>
+    </div>
+
+    <div id="result-cards"></div>
+
+    <div class="priority-card" id="priority-card">
+      <div class="prio-label">#1 Training Priority</div>
+      <div class="prio-title" id="prio-title"></div>
+      <div class="prio-body"  id="prio-body"></div>
+    </div>
+
+    <div class="cta-card">
+      <div class="cta-badge">Free — No Commitment</div>
+      <div class="cta-title">Ready to close the gap?</div>
+      <div class="cta-body">
+        Book a free 30-minute athlete assessment with Coach Bacon. We build a plan to turn your weak qualities into weapons — before your next season starts.
+      </div>
+      <!-- UPDATE: Replace href with your booking link or Instagram DM link -->
+      <a class="btn btn-primary" href="#" onclick="alert('Update this link with your booking URL!'); return false;">
+        Book My Free Assessment &rarr;
+      </a>
+      <button class="btn-outline" onclick="shareResults()">📤 Share My Results</button>
+      <!-- UPDATE: Replace with your Instagram handle -->
+      <div class="cta-sub">DM <strong>@performancebacon</strong> · Say "ASSESS" to get started</div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ Benchmarks are sourced from published peer-reviewed soccer research (Lolli 2023, Compton 2025, Boone 2012, Saldanha 2026). These are group-level norms — individual context, training age, and biological maturity always matter more than one data point. This tool is for informational use only, not medical advice.
+    </div>
+
+    <div class="footer">
+      Performance Bacon S&C &copy; 2026<br>
+      <span style="color:var(--dim)">Built with evidence. Built for athletes.</span>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+/* =====================================================
+   STATE
+===================================================== */
+const A = { sex: null, age: null, pos: null, scores: {} };
+
+/* =====================================================
+   BENCHMARK DATA
+   Source: Lolli 2023 (youth male, n=441), Compton 2025 (female),
+   Boone 2012 (professional male), Saldanha 2026 (youth/senior)
+   Sprint (lower is better): v = [elite_max, above_max, avg_max, below_max]
+   Jumps/Yoyo (higher is better): v = [below_min, avg_min, above_min, elite_min]
+===================================================== */
+const B = {
+  male: {
+    u15: {
+      s10:  { d:'l', v:[1.82, 1.92, 2.02, 2.12] },
+      s30:  { d:'l', v:[4.10, 4.30, 4.55, 4.80] },
+      cmj:  { d:'h', v:[18,   24,   30,   36  ] },
+      yoyo: { d:'h', v:[500,  800,  1200, 1800 ] }
+    },
+    u17: {
+      s10:  { d:'l', v:[1.78, 1.88, 1.98, 2.08] },
+      s30:  { d:'l', v:[3.90, 4.10, 4.35, 4.60] },
+      cmj:  { d:'h', v:[22,   28,   34,   40  ] },
+      yoyo: { d:'h', v:[600,  900,  1400, 2000 ] }
+    },
+    u19: {
+      s10:  { d:'l', v:[1.76, 1.86, 1.96, 2.06] },
+      s30:  { d:'l', v:[3.80, 3.95, 4.15, 4.35] },
+      cmj:  { d:'h', v:[26,   32,   38,   44  ] },
+      yoyo: { d:'h', v:[800,  1200, 1800, 2400 ] }
+    }
+  },
+  female: {
+    u15: {
+      s10:  { d:'l', v:[1.95, 2.05, 2.17, 2.27] },
+      s30:  { d:'l', v:[4.60, 4.90, 5.20, 5.50] },
+      cmj:  { d:'h', v:[12,   17,   22,   27  ] },
+      yoyo: { d:'h', v:[350,  600,  900,  1200 ] }
+    },
+    u17: {
+      s10:  { d:'l', v:[1.90, 2.00, 2.12, 2.22] },
+      s30:  { d:'l', v:[4.45, 4.75, 5.05, 5.35] },
+      cmj:  { d:'h', v:[12,   18,   24,   30  ] },
+      yoyo: { d:'h', v:[400,  700,  1000, 1400 ] }
+    },
+    u19: {
+      s10:  { d:'l', v:[1.88, 1.98, 2.10, 2.22] },
+      s30:  { d:'l', v:[4.35, 4.65, 4.95, 5.25] },
+      cmj:  { d:'h', v:[14,   20,   26,   32  ] },
+      yoyo: { d:'h', v:[550,  900,  1200, 1600 ] }
+    }
+  }
+};
+
+const RLABELS = ['Elite', 'Above Avg', 'Average', 'Below Avg', 'Needs Work'];
+const RCLASS  = ['r0','r1','r2','r3','r4'];
+const RCOLORS = ['var(--gold)','var(--lime)','var(--amber)','var(--orange)','var(--red)'];
+const RBGS    = ['var(--gold-bg)','var(--lime-bg)','var(--amber-bg)','var(--orange-bg)','var(--red-bg)'];
+
+const PMETA = {
+  s10:  { name:'10m Sprint',      icon:'⚡', unit:'s',  quality:'Acceleration' },
+  s30:  { name:'30m Sprint',      icon:'🏃', unit:'s',  quality:'Speed'        },
+  cmj:  { name:'Vertical Jump',   icon:'🚀', unit:'cm', quality:'Power'        },
+  yoyo: { name:'Yo-Yo IRT1',      icon:'🔋', unit:'m',  quality:'Endurance'    }
+};
+
+const PLABELS = {
+  gk:'Goalkeeper', cb:'Center Back', fb:'Fullback / Wing Back',
+  cdm:'Defensive Midfielder', cm:'Central Midfielder',
+  cam:'Attacking Midfielder', w:'Winger', st:'Striker / Forward'
+};
+
+/* Position-specific insight copy — grounded in match demands */
+const PINS = {
+  gk: {
+    s10:  'First-step quickness is a GK\'s most critical sprint quality — it determines shot coverage, corner box dominance, and sweeper-keeper impact on through balls.',
+    s30:  'Sweeper-keeper play makes 30m speed matter. Elite GKs are faster than people expect — top speed in behind-the-defense clearances separates good from great.',
+    cmj:  'Vertical jump is the #1 physical quality for goalkeepers. Aerial dominance, diving range, and shot-stopping reach are all predicted by jump height.',
+    yoyo: 'GKs cover significantly less total distance than outfield players. A lower Yo-Yo score is expected and normal — focus your energy on power and explosiveness.'
+  },
+  cb: {
+    s10:  'Recovery acceleration over 5–10m determines whether you win or lose 1v1 races behind your defensive line. Your 10m time is your ability to recover from being beaten.',
+    s30:  'Elite center backs need elite top speed to defend against fast strikers in open space. Do not accept "CBs don\'t need to be fast" — they do.',
+    cmj:  'Aerial ability wins set pieces and prevents goals. Your jump height directly predicts dominance in the most dangerous moments of every game.',
+    yoyo: 'CBs need a solid aerobic base to hold shape, maintain positioning intensity, and recover between defensive phases across 90 minutes.'
+  },
+  fb: {
+    s10:  'Fullbacks live and die by short-burst acceleration. Your 10m time is your ability to recover behind wingers, press wide, and win 1v1 sprints up the flank.',
+    s30:  'You are likely the highest-mileage player on the pitch. Top-end speed in overlapping runs and recovery sprints is non-negotiable for your role.',
+    cmj:  'Power helps with overlapping drive, crossing quality, and defensive headers. Important, but aerobic capacity and sprint speed are your primary physical weapons.',
+    yoyo: 'Fullbacks cover 10–13km per match — more than any outfield position in some systems. Endurance is the foundation everything else sits on for your role.'
+  },
+  cdm: {
+    s10:  'Short-burst acceleration helps you win 50/50 balls, press quickly after turnovers, and close space before opponents can turn with the ball.',
+    s30:  'Top-end speed in recovery runs — especially 1v1 pursuit of attackers who break through — is a critical defensive quality for the holding midfielder role.',
+    cmj:  'Physical dominance in midfield battles and aerial duels from defensive set pieces. Strength and power underpin your ability to impose yourself defensively.',
+    yoyo: 'As a box-to-box anchor, your aerobic capacity determines whether you can press with the same intensity in minute 80 as you did in minute 5.'
+  },
+  cm: {
+    s10:  'Short accelerations define your ability to find space, receive in tight areas, and create separation from defenders. This is your primary sprint quality.',
+    s30:  'Higher top speed allows you to impact fast transitions in both directions — tracking back quickly and arriving late into the box in attack.',
+    cmj:  'Power improves physical presence in midfield duels, the ability to play through contact, and late arriving runs into the box.',
+    yoyo: 'Central midfielders cover 10–12km per match with the most direction changes of any position. Endurance is the foundation your entire game is built on.'
+  },
+  cam: {
+    s10:  'CAMs need explosive acceleration to create separation in tight spaces, receive between the lines, and burst past pressure. Your most critical sprint quality.',
+    s30:  'Top-end speed allows you to threaten in behind, stretch defenses, and make dangerous runs into channels. Elite CAMs are faster than most defenders expect.',
+    cmj:  'Power transfers to shot velocity, heading in attack, and jumping to receive over defenders. Your physical weapons in the final third.',
+    yoyo: 'Modern attacking midfielders press relentlessly and arrive late into the box. Your Yo-Yo score determines whether you can maintain attacking impact in the 85th minute.'
+  },
+  w: {
+    s10:  'First-step explosion to get past defenders is your primary weapon. Your 10m time is how dangerous you are in wide 1v1s — the most important sprint stat for your position.',
+    s30:  'Top-end speed is your biggest physical weapon. Elite wingers benchmark in the top 10–15% of all soccer players in 30m sprint. Every tenth of a second matters.',
+    cmj:  'Power drives crossing quality, shooting off your weaker foot, and fighting for wide positions against bigger defenders.',
+    yoyo: 'Wingers sprint repeatedly — high-intensity efforts 40–60 times per match. A strong Yo-Yo score means you can go 100% in the 80th minute just like the 20th.'
+  },
+  st: {
+    s10:  'First-step acceleration to beat defenders to the ball, create separation, and get into shooting positions. This is your primary offensive weapon.',
+    s30:  'Running in behind at top speed is one of the most dangerous attacking actions in soccer. Elite strikers are faster than most defenders can track.',
+    cmj:  'Strikers win aerial duels, hold up play with physicality, and generate more shot power when they are explosive. Power is a difference-maker in your position.',
+    yoyo: 'Strikers cover less total distance than wide players but press relentlessly and need the endurance to stay sharp through 90 minutes of physical battles.'
+  }
+};
+
+/* Priority messages keyed by test ID */
+const PRIO = {
+  s10: {
+    title: 'First-Step Acceleration',
+    body:  'Acceleration is trainable — and faster than any other quality to improve. A focused 6–8 week acceleration block combining explosive hip hinge strength, short-distance sprints (5–15m), and resisted sled work can take 0.10–0.15s off your 10m time. Technique, not just fitness, is usually the rate limiter.'
+  },
+  s30: {
+    title: 'Top-End Speed',
+    body:  'Speed is a skill, not a gift. An ALTIS-informed speed development block — free-velocity sprints at 95%+ effort, flying 10-20m runs, and posterior chain strength — addresses the two main limiters: stride mechanics and force application. Consistency over 8–10 weeks produces real results.'
+  },
+  cmj: {
+    title: 'Explosive Lower-Body Power',
+    body:  'Power is the product of strength × speed. The evidence-based route: a Triphasic strength block (eccentric overload → isometric → concentric) followed by contrast training and plyometric progression. Athletes who close a strength deficit first see the fastest jump gains. A 5–8cm CMJ improvement in one training block is realistic.'
+  },
+  yoyo: {
+    title: 'Aerobic Capacity & Endurance',
+    body:  'The Yo-Yo test responds quickly to targeted training. High-intensity aerobic intervals — 10:10s at 90–95% max speed, 15:15s intervals, and small-sided games — 2–3× per week for 6–8 weeks have been shown to improve YYIR1 scores by 20–40% in players who start below average. Your engine can get rebuilt fast.'
+  }
+};
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+function go(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s' + n).classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* =====================================================
+   CHOICE PICKER
+===================================================== */
+function pick(btn) {
+  const g = btn.dataset.g;
+  document.querySelectorAll(`[data-g="${g}"]`).forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  A[g] = btn.dataset.v;
+}
+
+/* =====================================================
+   VALIDATE PROFILE
+===================================================== */
+function validateProfile() {
+  const pos = document.getElementById('pos-sel').value;
+  const err = document.getElementById('err-profile');
+  if (!A.sex || !A.age || !pos) { err.classList.add('show'); return; }
+  err.classList.remove('show');
+  A.pos = pos;
+  go(3);
+}
+
+/* =====================================================
+   VALIDATE TESTS
+===================================================== */
+function validateTests() {
+  const ids = ['s10','s30','cmj','yoyo'];
+  const inputs = { s10:'t-s10', s30:'t-s30', cmj:'t-cmj', yoyo:'t-yoyo' };
+  A.scores = {};
+  let any = false;
+
+  ids.forEach(k => {
+    const el = document.getElementById(inputs[k]);
+    const v  = parseFloat(el.value);
+    if (!isNaN(v) && v > 0) {
+      if (k === 'cmj') {
+        const unit = document.getElementById('cmj-unit').value;
+        A.scores[k] = unit === 'in' ? +(v * 2.54).toFixed(1) : v;
+      } else {
+        A.scores[k] = v;
+      }
+      any = true;
+    }
+  });
+
+  const err = document.getElementById('err-tests');
+  if (!any) { err.classList.add('show'); return; }
+  err.classList.remove('show');
+  buildResults();
+  go(4);
+}
+
+/* =====================================================
+   RATING ENGINE
+===================================================== */
+function rate(value, bench) {
+  const v = bench.v;
+  if (bench.d === 'l') { // lower is better
+    if (value <= v[0]) return 0;
+    if (value <= v[1]) return 1;
+    if (value <= v[2]) return 2;
+    if (value <= v[3]) return 3;
+    return 4;
+  } else {               // higher is better
+    if (value >= v[3]) return 0;
+    if (value >= v[2]) return 1;
+    if (value >= v[1]) return 2;
+    if (value >= v[0]) return 3;
+    return 4;
+  }
+}
+
+function gaugePct(value, bench) {
+  const v = bench.v;
+  let pct;
+  if (bench.d === 'l') {
+    // Elite end = v[0], Poor end = v[3] + spread
+    const poor = v[3] + (v[3] - v[2]) * 0.6;
+    const best = v[0] - (v[1] - v[0]) * 0.6;
+    pct = (poor - value) / (poor - best) * 100;
+  } else {
+    const poor = v[0] - (v[1] - v[0]) * 0.6;
+    const best = v[3] + (v[3] - v[2]) * 0.6;
+    pct = (value - poor) / (best - poor) * 100;
+  }
+  return Math.max(3, Math.min(97, pct));
+}
+
+/* =====================================================
+   BUILD RESULTS
+===================================================== */
+function buildResults() {
+  const bs  = B[A.sex][A.age];
+  const ageL = { u15:'U14–15', u17:'U16–17', u19:'U18–19' }[A.age];
+  const sexL = A.sex === 'male' ? 'Male' : 'Female';
+
+  document.getElementById('rh-tag').textContent = `${ageL} ${sexL} · ${PLABELS[A.pos]}`;
+
+  const ratings = {};
+  const cards   = [];
+
+  Object.entries(A.scores).forEach(([k, val]) => {
+    const bench   = bs[k];
+    const meta    = PMETA[k];
+    const r       = rate(val, bench);
+    const pct     = gaugePct(val, bench);
+    const insight = (PINS[A.pos] || {})[k] || '';
+    ratings[k]    = r;
+
+    const dispVal = (k === 's10' || k === 's30') ? val.toFixed(2) : val;
+
+    cards.push(`
+      <div class="res-card">
+        <div class="rc-top">
+          <div>
+            <div class="rc-quality">${meta.icon} ${meta.quality}</div>
+            <div class="rc-score">${dispVal}<span class="rc-unit">${meta.unit}</span></div>
+          </div>
+          <div class="rating-badge ${RCLASS[r]}">${RLABELS[r]}</div>
+        </div>
+        <div class="gauge-track">
+          <div class="gauge-fill" style="width:${pct}%;background:${RCOLORS[r]}"></div>
+        </div>
+        <div class="gauge-labels"><span>Needs Work</span><span>Elite</span></div>
+        ${insight ? `<div class="rc-insight">${insight}</div>` : ''}
+      </div>
+    `);
+  });
+
+  document.getElementById('result-cards').innerHTML = cards.join('');
+
+  /* Summary chips */
+  const counts = [0,0,0,0,0];
+  Object.values(ratings).forEach(r => counts[r]++);
+  const chipsHTML = counts.map((c, r) => c > 0 ? `
+    <div class="chip" style="background:${RBGS[r]};border:1px solid ${RCOLORS[r]}33">
+      <div class="chip-dot" style="background:${RCOLORS[r]}"></div>
+      <span style="color:${RCOLORS[r]};font-weight:700">${c}× ${RLABELS[r]}</span>
+    </div>` : '').join('');
+  document.getElementById('rh-chips').innerHTML = chipsHTML;
+
+  /* Priority: worst rated test */
+  let worst = -1, worstKey = null;
+  Object.entries(ratings).forEach(([k, r]) => { if (r > worst) { worst = r; worstKey = k; } });
+
+  const pc = document.getElementById('priority-card');
+  if (worstKey && PRIO[worstKey]) {
+    document.getElementById('prio-title').textContent = PRIO[worstKey].title;
+    document.getElementById('prio-body').textContent  = PRIO[worstKey].body;
+    pc.style.display = '';
+  } else {
+    pc.style.display = 'none';
+  }
+}
+
+/* =====================================================
+   SHARE
+===================================================== */
+function shareResults() {
+  const rWords = ['Elite','Above Average','Average','Below Average','Needs Work'];
+  const bs = B[A.sex][A.age];
+  const lines = Object.entries(A.scores).map(([k, val]) => {
+    const r = rate(val, bs[k]);
+    return `${PMETA[k].icon} ${PMETA[k].name}: ${rWords[r]}`;
+  }).join('\n');
+
+  const txt = `My soccer athletic profile (Performance Bacon S&C):\n\n${lines}\n\nCheck yours → ${window.location.href}`;
+
+  if (navigator.share) {
+    navigator.share({ title: 'My Soccer Athletic Profile', text: txt }).catch(() => fallbackCopy(txt));
+  } else {
+    fallbackCopy(txt);
+  }
+}
+
+function fallbackCopy(txt) {
+  navigator.clipboard.writeText(txt)
+    .then(() => alert('Results copied to clipboard! Paste anywhere to share.'))
+    .catch(() => alert('Copy this to share:\n\n' + txt));
+}
+</script>
+</body>
+</html>
